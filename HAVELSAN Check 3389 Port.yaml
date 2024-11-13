@@ -1,0 +1,36 @@
+zabbix_export:
+  version: '6.0'
+  date: '2024-11-13T12:27:59Z'
+  groups:
+    - uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+  templates:
+    - uuid: f916bfb2f242428d8fce2d8fe68e5069
+      template: 'Havelsan Check 3389 Port'
+      name: 'Havelsan Check 3389 Port'
+      groups:
+        - name: Templates
+      items:
+        - uuid: 4a4f64aa9fde42128972a6c93066c426
+          name: 'Havelsan - TCP Perf Port: 3389'
+          type: SIMPLE
+          key: 'net.tcp.service.perf[tcp,,3389]'
+          delay: 15s
+          value_type: FLOAT
+          units: s
+          triggers:
+            - uuid: a4273974852d41c98e5a8c75d46fc556
+              expression: 'avg(/Havelsan Check 3389 Port/net.tcp.service.perf[tcp,,3389],5)>1'
+              name: 'TCP Port 3389 performance issue'
+              priority: WARNING
+        - uuid: e8283cc291984d44b7d04f74cd952014
+          name: 'Havelsan - TCP Down Check Port: 3389'
+          type: SIMPLE
+          key: 'net.tcp.service[tcp,,3389]'
+          delay: 15s
+          units: status
+          triggers:
+            - uuid: 85ef4b96cb2f4fd3bb8f54f61ce28426
+              expression: 'last(/Havelsan Check 3389 Port/net.tcp.service[tcp,,3389],#1)=0'
+              name: 'TCP Port 3389 is down'
+              priority: HIGH
